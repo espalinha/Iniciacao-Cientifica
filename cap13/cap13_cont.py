@@ -83,6 +83,9 @@ class mlp():
         self.output_funcs_prime = output_funcs_prime
         self.grad_loss = grad_loss
         self.grad_loss_prime = grad_loss_prime
+
+        print(self.weights)
+        print(self.biases)
   #algorithm 6.3, Ian Goodfellow
 
     def feedforward(self, x):
@@ -174,16 +177,16 @@ std = np.std(X_train)
 X_train = (X_train - mean) / std
 X_test = (X_test - mean) / std
 
-print(X_train)
+#print(X_train)
 
 y_train = one_hot_encoding(y_train, 3)
 y_test = one_hot_encoding(y_test, 3)
 
-mlp_ = mlp([4, 5, 4, 3], grad_loss, grad_loss_prime, leaky_relu, leaky_relu_prime, softmax, softmax_prime, epochs=4000, eta = 0.001)
-mlp_.fit(X_train, y_train)
+mlp_ = mlp([2, 2, 1], grad_loss, grad_loss_prime, leaky_relu, leaky_relu_prime, softmax, softmax_prime, epochs=4000, eta = 0.001)
+#mlp_.fit(X_train, y_train)
 
 print("----------------------------------------------------------------------------------------------")
-
+"""
 acertou = 0
 
 for i, x in enumerate(X_test):
@@ -194,5 +197,5 @@ for i, x in enumerate(X_test):
 #    print("real: ", y_real)
 
 print("Acurácia: ", (100*acertou/len(y_test)))
-
+"""
 
