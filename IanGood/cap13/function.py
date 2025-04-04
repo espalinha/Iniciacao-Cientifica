@@ -1,5 +1,8 @@
 import jax
 import jax.numpy as jnp
+from functools import partial
+def __one_hot_encoding(y, num_classes):
+    return jnp.eye(num_classes)[y.astype(jnp.int32)]
 
 @jax.jit
 def softmax(x):
@@ -47,4 +50,19 @@ def tanh(x):
 @jax.jit
 def tanh_prime(x):
     return 1 - jnp.tanh(x) ** 2
+
+@partial(jax.jit, static_argnames=('num_classes',))
+def cross_entropy(y_pred, y_true, num_classes, eta=1e-8):
+    #jax.debug.print("y_true: {}", y_true)
+    #jax.debug.print("y_pred: {}", y_pred)
+    y_pred = jnp.clip(y_pred, eta, 1.0 - eta)
+    y_true_one_hot = __one_hot_encoding(y_true, num_classes)
+    return -jnp.mean(jnp.sum(y_true_one_hot * jnp.log(y_pred), axis=1))
+
+@jax.jit
+def cross_entropy_prime(y_pred, y_true, eta=1e-8):
+    ##jax.debug.print("y_true: {}", y_true)
+    #jax.debug.print("y_pred: {}", y_pred)
+    y_pred = jnp.clip(y_pred, eta, 1.0 - eta)
+    return -y_true / y_pred
 
