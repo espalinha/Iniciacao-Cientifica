@@ -44,11 +44,13 @@ def __init_params(key, hidden, epochs, eta):
 
 def __grad_loss(y_pred, y):
     #return fn.binary_cross_entropy(y, y_pred)
-    return fn.grad_loss(y_pred, y)
+    return fn.cross_entropy(y_pred, y, 3)
+    #return fn.grad_loss(y_pred, y)
 @jax.jit
 def __grad_loss_prime(y_pred, y):
+    return fn.cross_entropy_prime(y_pred, y)
     #return fn.binary_cross_entropy_prime(y, y_pred)
-    return fn.grad_loss_prime(y_pred, y)
+    #return fn.grad_loss_prime(y_pred, y)
 @jax.jit
 def __hidden_func(x):
     #return fn.relu(x)
@@ -59,13 +61,15 @@ def __hidden_func_prime(x):
     #return fn.relu_prime(x)
 @jax.jit
 def __output_funcs(x):
+    return fn.softmax(x)
     #return fn.sigmoid(x)     
-    return fn.identity(x)
+    #return fn.identity(x)
 @jax.jit
 def __output_funcs_prime(x):
+    return fn.softmax_prime(x)
     #return fn.sigmoid_prime(x)
 
-    return fn.identity_prime(x)
+    #return fn.identity_prime(x)
 @jax.jit
 def __feedforward(x, param: ReturnType) -> jax.Array:
     for i, (w, b) in enumerate(zip(param.params.weights, param.params.bias)):
@@ -182,11 +186,11 @@ if __name__ == "__main__":
         print("verdadeiro: ", y[i])
     """
     
-    x = jnp.linspace(start=0.01, stop=2*jnp.pi, num=15000)
+    x = jnp.linspace(start=0.01, stop=2*jnp.pi, num=25000)
     x = jnp.reshape(x, (-1, 1))
     y = jnp.sin(x) + jnp.cos(2*x)
     
-    params = fit([2909, [1, 32, 8, 8, 32, 1], 4500, 0.01], x, y)
+    params = fit([2909, [1, 32, 8, 8, 32, 1], 5000, 0.01], x, y)
     print("X: ", 1.5)
     print("Valor real: ", jnp.sin(1.5) + jnp.cos(2*1.5))
     print("Valor predito: ", predict(jnp.array([1.5]), params))
